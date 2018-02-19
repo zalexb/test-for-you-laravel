@@ -14,6 +14,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        $domain = preg_replace('#^https?://#', '', Request::root());
+
+        if($domain!=='test-j')
+            URL::forceScheme('https');
     }
 
     /**
