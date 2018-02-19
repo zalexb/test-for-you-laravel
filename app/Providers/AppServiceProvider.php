@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,8 +17,9 @@ class AppServiceProvider extends ServiceProvider
         //
         $domain = preg_replace('#^https?://#', '', Request::root());
 
-        if($domain!=='test-j')
+        if($domain!='test-j')
             URL::forceScheme('https');
+
     }
 
     /**
