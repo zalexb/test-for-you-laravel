@@ -19,6 +19,15 @@ $(document).ready(function () {
                 else {
                     $('.login_errors').append(data.errors);
                 }
+            },
+            error :function( data ) {
+                var errors = JSON.parse(data.responseText).errors;
+                $('.login_errors').empty();
+                for(var error in errors){
+                    errors[error].forEach(function (value,i){
+                        $('.login_errors').append(errors[error][i])
+                    })
+                }
             }
         })
     });

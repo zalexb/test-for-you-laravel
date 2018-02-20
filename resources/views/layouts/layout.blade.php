@@ -20,13 +20,13 @@
 <div style="background-color: black;width: 100%;padding: 0;margin: 0" class="header-top">
     <div class="container">
         <div class="top-right">
-            @if(!unserialize(request()->cookie('user'))['auth'])
+            @if(!session('user')['auth'])
             <ul class="login_list">
                 <li class="text"><a class="login" href="javascript:;">Login</a></li>
             </ul>
             @else
             <ul class="login_list">
-                <li style="border-left: none" class="text"><span style="color: white"> Hello,{{unserialize(request()->cookie('user'))['username']}}</span></li>
+                <li style="border-left: none" class="text"><span style="color: white"> Hello, {{session('user')['username']}}</span></li>
                 <li class="text"><a href="{{route('logout')}}">Logout</a></li>
             </ul>
             @endif
@@ -44,7 +44,7 @@
             <div class="collapse navbar-collapse">
                 <ul style="margin-top: 2em" class="nav navbar-nav">
                     <li><a href="{{route('index')}}">Home</a></li>
-                    @if(unserialize(request()->cookie('user'))['auth'])
+                    @if(session('user')['auth'])
                         <li><a href="{{route('create_post')}}">Create post</a></li>
                     @endif
                 </ul>

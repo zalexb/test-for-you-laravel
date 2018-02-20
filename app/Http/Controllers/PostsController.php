@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class PostsController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $posts = Post::with('user')->orderByDesc('id')->paginate(5);
 
         return view('index',[
@@ -15,17 +16,18 @@ class PostsController extends Controller
         ]);
     }
 
-    public function delete(Request $request,$id){
+    public function delete(Request $request,$id)
+    {
         $post = Post::find($id);
 
-        if($post->user_id == unserialize(request()->cookie('user'))['id'])
+        if($post->user_id == session('user')['id'])
             $post->delete();
 
         return redirect()->to('/');
     }
 
-    public function single(Request $request,$id){
-
+    public function single(Request $request,$id)
+    {
         $post = Post::find($id);
 
         return view('single',[
@@ -33,53 +35,45 @@ class PostsController extends Controller
         ]);
     }
 
-    public function create(Request $request){
-        if(unserialize(request()->cookie('user'))['auth']) {
+    public function create(Request $request)
+    {
+        if(session('user')['auth'])
+        {
             if ($request->method() == 'GET')
                 return view('create_post');
 
-            $title = $request->input('title');
-            $description = $request->input('description');
-
-            if (empty($title))
-                return redirect()->back()->with('error', 'Title is empty');
-
-            if (empty($description))
-                return redirect()->back()->with('error', 'Password is empty');
-
-            Post::create([
-                'title' => $title,
-                'description' => $description,
-                'user_id' => unserialize(request()->cookie('user'))['id'],
+            $validatedData = $request->validate([
+                'title' => 'required|max:50',
+                'description' => 'required|max:2000',
             ]);
+
+            $validatedData['user_id'] = session('user')['id'];
+
+            Post::create($validatedData);
         }
             return redirect()->to('/');
 
     }
 
-    public function edit(Request $request,$id){
-        if(unserialize(request()->cookie('user'))['auth']) {
+    public function edit(Request $request,$id)
+    {
+        if(session('user')['auth'])
+        {
             $post = Post::find($id);
 
-            if ($request->method() == 'GET') {
+            if ($request->method() == 'GET')
+            {
                 return view('edit_post', [
                     'post' => $post
                 ]);
             }
 
-            $title = $request->input('title');
-            $description = $request->input('description');
-
-            if (empty($title))
-                return redirect()->back()->with('error', 'Title is empty');
-
-            if (empty($description))
-                return redirect()->back()->with('error', 'Password is empty');
-
-            $post->update([
-                'title' => $title,
-                'description' => $description,
+            $validatedData = $request->validate([
+                'title' => 'required|max:20',
+                'description' => 'required|max:2000',
             ]);
+
+            $post->update($validatedData);
         }
             return redirect()->back();
 

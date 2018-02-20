@@ -1,10 +1,14 @@
 @extends('./layouts/layout')
 @section('content')
     <form id="create_post" method="POST" action="{{route('create_post')}}">
-        @if(session('error'))
-        <div class="alert alert-danger">
-            {{session('error')}}
-        </div>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
         <div class="form-group">
             <label>Title:</label>

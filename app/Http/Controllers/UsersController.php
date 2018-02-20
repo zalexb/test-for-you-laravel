@@ -5,27 +5,30 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Contracts\Cookie\Factory;
-use Illuminate\Support\Facades\Cookie;
 
 class UsersController extends Controller
 {
 
     //
-    public function login(Request $request,Factory $cookie){
-        $username = $request->input('username');
-        $password = $request->input('password');
+    public function login(Request $request)
+    {
+        /*  $username = $request->input('username');
+          $password = $request->input('password');
 
-        if (empty($username))
-            return response()->json(['errors' => 'Username in empty']);
+          if (empty($username))
+              return response()->json(['errors' => 'Username in empty']);
 
-        if (empty($password))
-            return response()->json(['errors' => 'Password in empty']);
+          if (empty($password))
+              return response()->json(['errors' => 'Password in empty']);*/
+        $validatedData = $request->validate([
+            'username' => 'required|max:50',
+            'password' => 'required',
+        ]);
 
-        $user = User::where('username', $username)->first();
+        $user = User::where('username', $validatedData['username'])->first();
 
         if ($user) {
-            if (!Hash::check($password, $user->password))
+            if (!Hash::check($validatedData['password'], $user->password))
                 return response()->json(['errors' => 'Wrong password']);
 
             $data = [
@@ -34,13 +37,13 @@ class UsersController extends Controller
                 'username' => $user->username
             ];
 
-            $cookie->queue($cookie->make('user', serialize($data), 10080));
+            session(['user' => $data]);
 
-            return response('ok');
+            return response('{success:true}');
         } else {
             $user = User::create([
-                'username' => $username,
-                'password' => Hash::make($password),
+                'username' => $validatedData['username'],
+                'password' => Hash::make($validatedData['password']),
             ]);
             $data = [
                 'auth' => true,
@@ -48,16 +51,17 @@ class UsersController extends Controller
                 'username' => $user->username
             ];
 
-            $cookie->queue($cookie->make('user', serialize($data), 10080));
+            session(['user' => $data]);
 
-            return response('ok');
+            return response('{success:true}');
         }
     }
 
-    public function logout(){
-        if(!empty($_COOKIE['user']))
-          $cookie = Cookie::forget('user');
+    public function logout(Request $request)
+    {
+        if($request->session()->has('user'))
+            $request->session()->forget('user');
 
-        return redirect()->back()->withCookie($cookie);
+        return redirect()->back();
     }
 }

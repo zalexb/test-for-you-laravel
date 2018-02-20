@@ -12,10 +12,8 @@
                         <p class="task_content">
                           {{$post->description}}
                         </p>
-                        @if(unserialize(request()->cookie('user'))['auth'])
-                            <p><a class="edit_button" href="{{route('edit_post',['id'=>$post->id])}}">EDIT</a></p>
-                        @endif
-                        @if(unserialize(request()->cookie('user'))['id']==$post->user_id)
+                        @if(session('user')['id']==$post->user_id)
+                        <p><a class="edit_button" href="{{route('edit_post',['id'=>$post->id])}}">EDIT</a></p>
                         <form action="{{route('delete_post',['id'=>$post->id])}}" METHOD="POST">
                             <button class="btn btn-danger">DELETE</button>
                             @method('DELETE')
