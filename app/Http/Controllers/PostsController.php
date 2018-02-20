@@ -43,7 +43,7 @@ class PostsController extends Controller
                 return view('create_post');
 
             $validatedData = $request->validate([
-                'title' => 'required|max:50',
+                'title' => 'required|max:25',
                 'description' => 'required|max:2000',
             ]);
 
@@ -69,7 +69,7 @@ class PostsController extends Controller
             }
 
             $validatedData = $request->validate([
-                'title' => 'required|max:20',
+                'title' => 'required|max:25',
                 'description' => 'required|max:2000',
             ]);
 

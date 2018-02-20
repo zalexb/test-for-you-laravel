@@ -12,16 +12,9 @@ class UsersController extends Controller
     //
     public function login(Request $request)
     {
-        /*  $username = $request->input('username');
-          $password = $request->input('password');
 
-          if (empty($username))
-              return response()->json(['errors' => 'Username in empty']);
-
-          if (empty($password))
-              return response()->json(['errors' => 'Password in empty']);*/
         $validatedData = $request->validate([
-            'username' => 'required|max:50',
+            'username' => 'required|max:15',
             'password' => 'required',
         ]);
 
